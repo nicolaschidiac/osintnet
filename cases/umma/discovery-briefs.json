@@ -1,0 +1,18 @@
+[
+  [
+    "filings",
+    "Evaluate official IRS TEOS/bulk XML/determination letters, ProPublica API v2, NY AG charity registry and NY DOS corporate inquiry. Identify concrete original returns for EIN 863883211 (2021 onward), schedules, aliases, gaps and corroborating/falsifying evidence. Do not crawl the charity website; another lane owns that."
+  ],
+  [
+    "source-audit",
+    "Audit these candidates ONLY: CourtListener official MCP, Vaquill fork, NYC Databook, OpenCorporates, SEC EDGAR, USAspending, SAM.gov, Arctic Shift REST, Shodan passive existing integration, ZoomEye, awesome-osint, frishtik/osint-tools-mcp-server, SOsintOps/claudii-exploratores, archived companyscope-mcp and LangSmith MCP/API. Group overlap; check primary docs/repo metadata, maintenance/license/auth/cost/ARM64. No installation or inference purchases."
+  ],
+  [
+    "web-geo-ads",
+    "Evaluate OSM/Overpass/Nominatim vs Google Places/HasData for provider-attributed one-mile business directory, Wayback/CommonCrawl/RDAP/CT and CrawlGraph, Google/YouTube public ad collectors block-town and lionkiii, Meta official public Ad Library. Recommend bounded lawful collection, licenses/retention/rate costs and gaps. No personal profiling or religion inference. Do NOT crawl target site; lead owns acquisition."
+  ],
+  [
+    "architecture",
+    "Independently propose portable case-neutral OSINT platform for ARM64 ORA6 (4CPU,24GB RAM,22GB available,76GB disk) with immutable evidence/raw artifact store, structured provenance and hypotheses, FTS and typed graph, durable task leases/idempotency/budgets, independently toggleable API adapters and authenticated MCP, live n8n-like canvas/SSE telemetry with real pulses. Compare Python SQLite first vs PostgreSQL/Redis/distributed. Describe security/SSRF/auth/RBAC/redaction, Access/tunnel deployment/rollback and meaningful acceptance tests. Research primary docs for key decisions. No case investigation or code edits."
+  ]
+]

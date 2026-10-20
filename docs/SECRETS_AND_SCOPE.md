@@ -1,0 +1,6 @@
+# Secrets and scope
+Live API tokens appeared in the source conversation; assume exposure and rotate before use. Do not put any actual token into the Git repository, MCP examples, reports, stdout, logs, issue comments, screenshot, dashboards or LangSmith traces. Use narrow Cloudflare API tokens, not global keys when avoidable. Inject secrets at runtime through a vault/keyring or protected environment, server-side only.
+
+Permitted: public primary records, IRS and regulator data, NY business registries, court dockets, public-facing website and archived crawls within access rules, advertising transparency data, public links, public DNS/RDAP/certificate histories, read-only Shodan/ZoomEye indices, and configuration/active security testing on infrastructure owned by the user.
+
+Not permitted without separate authorization: intrusive target scanning, exploitation, bypassing auth/captchas/paywalls, private account access, doxxing, tracking random neighbors, faith-based business-owner labeling, exploiting discovered weaknesses, fabricated identities or claims. Report uncertainty, give the charity a fair opportunity for correction and seek legal review before making public accusations.

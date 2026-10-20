@@ -1,0 +1,2 @@
+# OSINTNET agent rules
+Read MASTER_PROMPT.md, docs/SECRETS_AND_SCOPE.md, docs/INVESTIGATION_PROTOCOL.md and ~/.mem0/AGENT_MEMORY_POLICY.md first. Delegate research through ROTOXY before finalizing architecture. Preserve sources and uncertainty. Never commit secrets, profile religion, or make unsupported accusations.

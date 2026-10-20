@@ -1,0 +1,128 @@
+{
+  "lane": "OSINTNET portable, case-neutral platform architecture",
+  "observed_at": "2026-10-19",
+  "sources": [
+    {
+      "url": "https://sqlite.org/wal.html",
+      "issuer": "SQLite",
+      "observed_fact": "WAL allows readers and a writer to proceed concurrently, but SQLite still permits only one writer at a time. WAL requires processes to share a host and does not work on a network filesystem; checkpointing affects WAL size and performance.",
+      "limitation": "Documentation describes SQLite behavior, not measured performance on the target ORA6."
+    },
+    {
+      "url": "https://www.sqlite.org/fts5.html",
+      "issuer": "SQLite",
+      "observed_fact": "SQLite documents FTS5 as its full-text search extension.",
+      "limitation": "This does not establish search quality or capacity for the expected corpus."
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/sql-select.html",
+      "issuer": "PostgreSQL",
+      "observed_fact": "PostgreSQL documents SKIP LOCKED as avoiding waits on locked rows, while warning it produces an inconsistent view unsuitable for general-purpose querying.",
+      "limitation": "It is a queue-claim building block, not a complete job scheduler."
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/textsearch.html",
+      "issuer": "PostgreSQL",
+      "observed_fact": "The PostgreSQL manual has a dedicated full-text search chapter.",
+      "limitation": "No comparative benchmark against SQLite was performed."
+    },
+    {
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http",
+      "issuer": "Model Context Protocol",
+      "observed_fact": "The current Streamable HTTP spec describes one MCP endpoint accepting POST requests; responses can be JSON or request-scoped SSE. It requires validating Origin and recommends authentication; local servers should bind to localhost. The spec notes removal of the GET stream endpoint and protocol-level sessions in this revision.",
+      "limitation": "Client compatibility must be checked against the actual MCP clients selected for deployment."
+    },
+    {
+      "url": "https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/self-hosted-apps/",
+      "issuer": "Cloudflare",
+      "observed_fact": "Cloudflare documents publishing a self-hosted app through Tunnel with Access policies, recommends creating the Access application before its tunnel route, and describes validating the Access token at the origin to reject bypass traffic.",
+      "limitation": "This is product guidance, not an assessment of the target account, DNS, or Access configuration."
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events",
+      "issuer": "MDN",
+      "observed_fact": "SSE is a one-way server-to-client stream; events are UTF-8 text blocks separated by blank lines, and EventSource reconnects unless closed.",
+      "limitation": "SSE alone does not provide durable event storage or client-to-server controls."
+    },
+    {
+      "url": "https://docs.n8n.io/workflows/executions/",
+      "issuer": "n8n",
+      "observed_fact": "n8n documents workflow executions and execution-data redaction that hides inputs and outputs while preserving metadata such as status, timing, and node names.",
+      "limitation": "This page does not establish how n8n implements canvas telemetry internally."
+    }
+  ],
+  "recommendations": [
+    {
+      "area": "Initial deployment",
+      "decision": "PROPOSAL: Start with a small Python API and worker processes on the single ARM64 host; use local SQLite for authoritative metadata, jobs, events, and FTS5. Enable WAL, keep all database users on that host and on a local filesystem, use short write transactions, and monitor/checkpoint WAL. Treat this as a fit hypothesis, not a benchmark result.",
+      "basis": "The stated 4 CPU, 24 GB RAM, 22 GB available storage, and single-host starting point favor fewer moving parts. SQLite\u2019s documented one-writer constraint is acceptable only while measured write contention remains low."
+    },
+    {
+      "area": "Evidence and analysis",
+      "decision": "PROPOSAL: Store original artifacts as content-addressed blobs (SHA-256) with create-only writes, atomic publication, size limits, and a manifest recording hash, timestamps, adapter, collection parameters, and custody events. Keep normalized derivatives separate and link them to source hashes. Use append-only observation, claim, hypothesis, and evidence-link tables; model typed graph edges relationally and index approved searchable text with FTS5.",
+      "basis": "This gives reproducible provenance and relational integrity without a graph service. Hash checks and append-only application behavior are tamper-evident controls, not protection against a privileged host administrator."
+    },
+    {
+      "area": "Scheduler and budgets",
+      "decision": "PROPOSAL: Persist versioned DAGs, tasks, dependencies, idempotency keys, attempt counts, lease owner/expiry, adapter budgets, and an ordered event log. Claim due tasks in a short BEGIN IMMEDIATE transaction; heartbeat leases and recover expired work. Re-run only safe/idempotent operations; classify uncertain external mutations as needs_reconciliation. Enforce per-run limits for requests, bytes, wall time, concurrency, and storage before dispatch.",
+      "basis": "Persisted claims survive process restarts. SQLite leases coordinate same-host processes, but do not create multi-host capacity."
+    },
+    {
+      "area": "Adapters and MCP",
+      "decision": "PROPOSAL: Make each API adapter independently disabled by default, with explicit enablement, scoped credentials, request/time/response limits, and audit events. Provide authenticated MCP Streamable HTTP with role-scoped tools, Origin validation, localhost binding when local, and no path or arbitrary-shell tools. Keep user-interface SSE telemetry separate from MCP transport."
+    },
+    {
+      "area": "Live canvas",
+      "decision": "PROPOSAL: Persist workflow versions and execution events. Emit status/progress pulses only when workers actually record transitions or heartbeats; serve an initial snapshot and replayable SSE cursor, plus keepalives. Provide authenticated POST controls for pause/cancel. Render source content as untrusted text and expose execution redaction controls."
+    },
+    {
+      "area": "Security and operations",
+      "decision": "PROPOSAL: Put the UI behind Cloudflare Access and Tunnel; validate Access identity at the origin too. Use separate least-privilege analyst, operator, and administrator roles; require explicit authorization for adapter configuration and destructive actions. For fetch adapters, allow only approved public HTTP(S) targets, reject loopback/private/link-local/reserved IPs, validate every redirect and DNS resolution, cap response bytes/time, and restrict egress. Keep secrets out of logs, events, prompts, and browser storage.",
+      "basis": "Cloudflare specifically warns that a tunnel route without an Access application can expose the app and recommends origin token validation."
+    },
+    {
+      "area": "Storage and rollback",
+      "decision": "PROPOSAL: Keep database and blob storage on the local persistent volume; set per-project quotas and stop acquisition before disk exhaustion. With 22 GB currently available, reserve explicit OS/database/recovery headroom and alert before crossing that threshold. Deploy a versioned ARM64 service build with additive, backward-compatible schema migrations. Back up using SQLite\u2019s supported backup mechanism or a quiesced consistent copy plus blobs; verify restore before upgrades and retain the prior application build for rollback."
+    }
+  ],
+  "alternatives": [
+    {
+      "option": "PostgreSQL",
+      "use_when": "Move authoritative jobs and metadata when measured write contention, multi-host workers, or operational needs justify a database service. Claim work with short row-lock transactions and SKIP LOCKED, restricted to queue selection; keep idempotency and lease recovery in application logic. PostgreSQL also offers full-text search.",
+      "tradeoff": "Adds an independently operated service and backup/upgrade path; not justified solely by the current host specification."
+    },
+    {
+      "option": "Redis",
+      "use_when": "Potential later broker/cache for measured fan-out or ephemeral coordination.",
+      "tradeoff": "Do not make it the initial source of truth: evidence provenance, typed relationships, search, and durable task state would still need a canonical store. Redis persistence-specific guarantees were not researched in this bounded pass."
+    },
+    {
+      "option": "Distributed deployment",
+      "use_when": "Only when a second host or availability requirement exists; move canonical state to PostgreSQL and use an appropriately durable object store, with explicit event delivery and idempotent consumers.",
+      "tradeoff": "More failure modes and operational burden than the one-host requirement establishes."
+    }
+  ],
+  "rejected": [
+    "PROPOSAL: Starting with a graph database, Redis-only scheduler, or multiple distributed services before measured workload requires them.",
+    "PROPOSAL: Calling the artifact store immutable against privileged host access; local hashing and append-only controls do not provide that guarantee.",
+    "PROPOSAL: Showing synthetic progress pulses or treating a lease timeout as proof that an external action did not happen."
+  ],
+  "unknowns": [
+    "Actual adapter count, expected request rates, artifact size distribution, retention period, and required concurrent analysts.",
+    "Measured CPU, memory, storage throughput, and SQLite write contention on the specific ARM64 OS and disk.",
+    "Access identity provider, DNS ownership, MCP client compatibility, and the desired external user model.",
+    "Provider terms, rate limits, and permitted data retention for each future adapter.",
+    "Whether regulatory or evidentiary requirements demand independently administered object lock, signatures, or external timestamping.",
+    "Redis persistence behavior was not verified from primary documentation in this bounded research pass."
+  ],
+  "tests": [
+    "On the target ARM64 host, run a representative ingestion/search/DAG workload; record latency, CPU/RAM, WAL growth, checkpoint behavior, free space, and writer-busy rates before raising concurrency.",
+    "Crash during blob staging and metadata commit; verify no partial artifact is published, hashes match, duplicate content is safely deduplicated, and quota exhaustion stops collection.",
+    "Run competing claimers in separate local processes; assert a task is leased once, dependencies gate execution, idempotency conflicts reject, heartbeat/expiry recovers safe work, and ambiguous mutations require reconciliation.",
+    "Verify typed graph traversal, claim-to-source provenance, FTS search, and that normalized derivatives never replace raw artifacts.",
+    "Disable one adapter and confirm zero outbound calls; test SSRF cases including private IPs, DNS rebinding, redirects, oversized bodies, timeouts, and secret redaction.",
+    "Test MCP unauthenticated/under-scoped requests, invalid Origin rejection, tool authorization, and current Streamable HTTP JSON/SSE behavior with selected clients.",
+    "Assert UI SSE pulses correspond to persisted worker events, replay from cursor after reconnect, and controls require authorization; test redacted execution views.",
+    "Test Access denial at the edge and origin-side token validation, backup/restore of database plus blobs, migration rollback, and service rollback."
+  ]
+}

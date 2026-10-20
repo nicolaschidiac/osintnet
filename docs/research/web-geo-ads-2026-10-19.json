@@ -1,0 +1,105 @@
+{
+  "lane": "OSINTNET web, geo, and public-ad research; text-only",
+  "observed_at": "2026-10-19 UTC",
+  "sources": [
+    {
+      "url": "https://www.openstreetmap.org/copyright",
+      "issuer": "OpenStreetMap Foundation",
+      "observed_fact": "The page identifies OSM data as ODbL and summarizes attribution and share-alike obligations for adapted data.",
+      "limitation": "This is a license summary; assess the full ODbL and the intended database before redistribution."
+    },
+    {
+      "url": "https://operations.osmfoundation.org/policies/nominatim/",
+      "issuer": "OpenStreetMap Foundation Operations Working Group",
+      "observed_fact": "The public Nominatim service policy sets an absolute maximum of one request per second, requires an identifying User-Agent or Referer and attribution, and applies the limit across an application\u2019s users.",
+      "limitation": "The policy applies to OSMF\u2019s public service, not independently operated Nominatim instances."
+    },
+    {
+      "url": "https://dev.overpass-api.de/overpass-doc/en/preface/commons.html",
+      "issuer": "Overpass API documentation",
+      "observed_fact": "Public instances are shared resources; the documentation warns against repetitive high-volume queries and world-scale scraping, directing bulk users toward planet data.",
+      "limitation": "The page describes shared capacity, not a guaranteed quota or service-level commitment."
+    },
+    {
+      "url": "https://developers.google.com/maps/documentation/places/web-service/nearby-search",
+      "issuer": "Google Maps Platform",
+      "observed_fact": "The official page is titled \u201cNearby Search (New) | Places API (New).\u201d",
+      "limitation": "The retrieved text did not expose request fields, storage rules, rates, or pricing."
+    },
+    {
+      "url": "https://docs.hasdata.com/apis/google-maps-scraper",
+      "issuer": "HasData",
+      "observed_fact": "This direct documentation URL returned HTTP 404.",
+      "limitation": "A 404 at this guessed path does not establish that the product or other documentation is unavailable; API, licensing, provenance, retention, and price remain unverified."
+    },
+    {
+      "url": "https://index.commoncrawl.org/",
+      "issuer": "Common Crawl",
+      "observed_fact": "The index page offers CDX URL-index search, says archive data is free to download, warns against overloading the index, and points bulk users to separate download instructions.",
+      "limitation": "An archive hit is historical crawl evidence, not proof that a business or domain is currently active or associated with a particular person."
+    },
+    {
+      "url": "https://api.github.com/search/repositories?q=user%3Ablock-town+OR+user%3Alionkiii&per_page=100",
+      "issuer": "GitHub",
+      "observed_fact": "The repository search request returned HTTP 422; it yielded no usable repository results.",
+      "limitation": "The query may be invalid; neither collector identity nor implementation was verified."
+    },
+    {
+      "url": "https://developers.facebook.com/docs/marketing-api/reference/ads_archive/",
+      "issuer": "Meta",
+      "observed_fact": "The official documentation URL returned HTTP 302; no page body was retrieved.",
+      "limitation": "API access, eligibility, fields, retention, and current terms were not verified."
+    }
+  ],
+  "recommendations": [
+    {
+      "status": "proposal",
+      "text": "For a one-mile directory, establish one geocoded center, define radius as 1,609.344 metres, and retain provider plus source ID, retrieval time, and license/terms reference per record. Keep OSM and commercial-provider records separately attributable."
+    },
+    {
+      "status": "proposal",
+      "text": "Use OSM POI data through a bounded Overpass query for a small prototype; use a regional extract or self-hosted service for repeat or bulk work. Use public Nominatim only for modest, user-triggered geocoding within its policy."
+    },
+    {
+      "status": "proposal",
+      "text": "Evaluate Google Places through its official API and current terms/pricing before collection. Do not assume HasData output has Google-compatible retention rights or reliable provider attribution until its current contract and provenance are confirmed."
+    },
+    {
+      "status": "proposal",
+      "text": "Treat Common Crawl and Wayback as historical discovery, and RDAP/CT as domain-level corroboration only. Do not treat any of these as business ownership proof. Do not crawl the target site."
+    },
+    {
+      "status": "proposal",
+      "text": "Prefer official Google/YouTube ad transparency and Meta Ad Library interfaces. Keep collection advertiser/ad-level and public; do not infer religion, sensitive traits, or individual targeting."
+    }
+  ],
+  "alternatives": [
+    "OSM/Overpass: open-data attribution and share-alike duties; public endpoints are capacity-shared. Suitable for bounded, transparent coverage, not unthrottled dependence.",
+    "Google Places: official nearby-search product is documented; pricing and storage constraints must be checked against current official terms before use.",
+    "HasData: third-party option not evaluated because the documentation URL failed; require written source, licensing, retention, and rate/cost details before considering.",
+    "Common Crawl: verified free archive downloads and a public URL index; useful for historical discovery, not current directory completeness."
+  ],
+  "rejected": [
+    "Bulk or repetitive collection against public Nominatim/Overpass endpoints.",
+    "Unverified Google/YouTube collectors, including block-town and lionkiii, as production sources without inspecting their repositories, terms, and collection behavior.",
+    "Personal profiling, religion inference, or presenting archival/domain signals as verified business ownership."
+  ],
+  "unknowns": [
+    "Google Places request geometry, field-mask requirements, applicable SKU prices, and storage restrictions were not confirmed in the retrieved page text.",
+    "HasData\u2019s current API, pricing, rate limits, underlying source, and reuse rights remain unknown.",
+    "The GitHub query failed; block-town and lionkiii collector repositories and behavior remain unverified.",
+    "Meta\u2019s redirect prevented verification of Ad Library API access and coverage.",
+    "Wayback, RDAP, Certificate Transparency, CrawlGraph, and Google Ads Transparency details were not independently retrieved within the eight-request limit."
+  ],
+  "tests": {
+    "run": [
+      "Eight direct public HTTP requests; no paid APIs, target-site requests, repository edits, or provider collection."
+    ],
+    "proposed": [
+      "Check exact one-mile inclusion with known coordinates and boundary cases.",
+      "Verify each result retains provider/source ID and attribution metadata through deduplication.",
+      "Before launch, confirm current Google/HasData/Meta terms, prices, quotas, and retention from their official documentation.",
+      "Inspect the exact block-town/lionkiii repositories and test whether outputs are public-ad records, with source links and timestamps, before use."
+    ]
+  }
+}

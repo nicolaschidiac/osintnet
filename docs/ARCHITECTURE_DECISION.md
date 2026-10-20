@@ -1,0 +1,23 @@
+# Initial architecture, 2026-10-19
+
+Decision follows four bounded ROTOXY/LightSprint discovery assignments. Source reports are in `docs/research/`; they are advisory research with explicit unknowns, not API acceptance receipts. One stale response was rejected; a filings worker initially stopped on exhausted Firecrawl quota. Corrected direct-read assignments completed. Aggregate reported model-cost delta was about $0.17; a source-audit worker separately reported about $0.05 of search use. Neither quantity establishes account-wide remaining quota.
+
+Use a single ORA6 deployment initially: Python, FastAPI, official MCP Python SDK 2.3, SQLite WAL/FTS5 and local content-addressed blobs. Short database transactions, durable GET-only jobs, idempotency conflicts, leases and owner fencing isolate source failures. The base development service uses two shared worker loops. The production overlay uses seven independent adapter processes and no gateway acquisition loops. SSE replays persisted event IDs; canvas motion requires a recent actual request/capture/completion event. The UI remains available when new queries are paused. No timer invokes an LLM.
+
+ORA3/5/6/7 were live-checked over SSH. Each reports ARM64, four CPUs and about 24 GB RAM. ORA6 had about 22 GB **available RAM** and 76 GB free disk. The advisory architecture report misread the RAM figure as free storage in two recommendations; those storage statements are not adopted. Existing container inventories were inspected without restarts. No CrewAI container appeared in `docker ps -a` on those four hosts at inspection time; this does not establish that old volumes or services never existed.
+
+SQLite stays on a local filesystem, never shared over NFS. PostgreSQL plus object storage becomes appropriate when measured writer contention, multiple hosts, or availability requirements justify it. Redis and a graph database add no necessary initial capability; typed source-linked graph edges live in SQL. Raw blobs use create-only hard-link publication, SHA-256 and an append-only metadata chain. SQLite triggers reject evidence edits. This is tamper evidence, not immunity from a privileged administrator.
+
+The HTTP service uses operator keys hashed at rest, expiring HttpOnly/SameSite sessions, analyst/operator/admin roles, same-origin mutation checks, exact Host checks and an authenticated MCP mount. External deployments additionally validate Cloudflare Access JWT signatures, audience, issuer and expiry. Minimal origin health metadata is public (the deployed edge still requires Access); evidence and controls require authentication. New installations create a protected operator key inside the data directory; it is never logged. No shared credentials are embedded in browser JavaScript.
+
+HTTPS egress resolves only exact allowed hosts, rejects nonpublic resolved IPs and credentials/ports/fragments, pins the selected public IP while validating TLS against the original hostname, validates each redirect, and limits response size/time. Adapters have explicit rate and hourly admission caps. New source nodes start disabled; pending integrations cannot be enabled. Seven GET adapters exist; pending nodes are clearly labeled. The production worker overlay gives each selected adapter its own CPU/memory/PID/log limits, heartbeat and graceful generation-based restart without Docker control privileges. This revision follows measured ORA6 headroom and actual subprocess-isolation tests. No multi-host database or ORA7 distribution is justified yet.
+
+Cases, identifiers, hypotheses and data are separate from portable code. Workspace roles currently span all cases in one instance. Use separate instances for case-level confidentiality boundaries. No case corpus or operator key belongs in the public repository.
+
+## Interface direction
+
+The main composition is a quiet operations workstation with a source mesh, a contextual inspector and an event strip. Palette: deep slate `#111824`, panel slate `#192231`, line blue `#2c3a4d`, cool text `#e7edf5`, coral control accent `#ff9179`, mint observed success `#6cd9b4`. Figtree carries navigation and operational text; dense data keeps ordinary sentence case. Nodes are source-specific, and uncertainty is visible. Pan/zoom, keyboard node selection, reduced motion and mobile layouts are supported. Finance/evidence views remain separate from the topology.
+
+## Acceptance boundaries
+
+Unit/HTTP tests, real source calls, real MCP client calls, browser rendering, ORA6 benchmarks and Cloudflare edge protection are distinct verification layers. Record each in `VERIFICATION.md`. Do not call a deferred adapter connected, an index a complete directory, a renderer an original XML, or a preliminary case report a completed investigation.

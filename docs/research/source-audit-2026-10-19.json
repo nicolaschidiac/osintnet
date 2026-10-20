@@ -1,0 +1,138 @@
+{
+  "lane": "OSINTNET candidate audit; text-only, primary-source research",
+  "observed_at": "2026-10-19",
+  "sources": [
+    {
+      "url": "https://www.courtlistener.com/help/mcp/",
+      "issuer": "Free Law Project / CourtListener",
+      "observed_fact": "CourtListener publishes an official MCP server and identifies OAuth-based access.",
+      "limitation": "Account and API rate limits apply; local ARM64 packaging is not relevant to the hosted server and was not established."
+    },
+    {
+      "url": "https://github.com/Vaquill-AI/courtlistener-mcp/blob/main/README.md",
+      "issuer": "Vaquill-AI",
+      "observed_fact": "A separate CourtListener MCP implementation documents hosted use and BYOK credentials; its repository identifies MIT licensing.",
+      "limitation": "Maintenance recency and ARM64 support were not established. It overlaps the official CourtListener MCP."
+    },
+    {
+      "url": "https://www.databook.nyc/mcp",
+      "issuer": "NYC Databook",
+      "observed_fact": "Databook documents an MCP server and REST API for NYC civic/procurement data; standard read access is public, with an optional key for a higher request limit.",
+      "limitation": "The published limits may change; ARM64 is not applicable to the hosted endpoint."
+    },
+    {
+      "url": "https://api.opencorporates.com/documentation/API-Reference",
+      "issuer": "OpenCorporates",
+      "observed_fact": "OpenCorporates documents a company-data REST API with token-based access and account-tier usage limits.",
+      "limitation": "Exact current pricing and eligibility were not resolved; no ARM64 claim applies to the hosted API."
+    },
+    {
+      "url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+      "issuer": "U.S. Securities and Exchange Commission",
+      "observed_fact": "SEC documents public EDGAR data APIs and requests a descriptive User-Agent; published fair-access guidance limits request rate.",
+      "limitation": "No license or ARM64 information for a client implementation was established."
+    },
+    {
+      "url": "https://api.usaspending.gov/docs/",
+      "issuer": "USAspending.gov",
+      "observed_fact": "The site publishes first-party REST API documentation for federal spending data.",
+      "limitation": "This audit did not establish current authentication, pricing, license, or ARM64 requirements."
+    },
+    {
+      "url": "https://open.gsa.gov/api/",
+      "issuer": "U.S. General Services Administration",
+      "observed_fact": "GSA documents multiple public APIs, including SAM.gov-related interfaces.",
+      "limitation": "SAM access and key requirements vary by API; do not treat the family as one uniformly unauthenticated service."
+    },
+    {
+      "url": "https://api.sam.gov/docs/api-key/",
+      "issuer": "SAM.gov",
+      "observed_fact": "SAM publishes API-key usage documentation.",
+      "limitation": "Endpoint-specific access, quotas, costs, and ARM64 client support were not fully resolved."
+    },
+    {
+      "url": "https://github.com/ArthurHeitmann/arctic_shift/blob/master/api/README.md",
+      "issuer": "Arthur Heitmann / Arctic Shift",
+      "observed_fact": "The repository contains first-party API documentation for Arctic Shift\u2019s Reddit archive API.",
+      "limitation": "Current service availability, maintenance recency, authentication, limits, license, and ARM64 support remain unverified."
+    },
+    {
+      "url": "https://developer.shodan.io/api",
+      "issuer": "Shodan",
+      "observed_fact": "Shodan documents its API for querying indexed Internet-host information.",
+      "limitation": "This review did not validate the existing integration\u2019s exact passive endpoint, credential tier, or cost. Avoid interpreting indexed-data queries as permission to scan."
+    },
+    {
+      "url": "https://www.zoomeye.ai/doc?channel=api",
+      "issuer": "ZoomEye",
+      "observed_fact": "ZoomEye publishes official API documentation for its Internet asset search service.",
+      "limitation": "Current plan limits, pricing, and ARM64 support were not established."
+    },
+    {
+      "url": "https://github.com/frishtik/osint-tools-mcp-server",
+      "issuer": "frishtik",
+      "observed_fact": "The repository describes an MCP server wrapping multiple OSINT tools; its license file identifies MIT.",
+      "limitation": "Per-tool credentials/dependencies and recent maintenance were not established; no explicit ARM64 evidence found."
+    },
+    {
+      "url": "https://github.com/SOsintOps/claudii-exploratores",
+      "issuer": "SOsintOps",
+      "observed_fact": "The repository describes an OSINT-oriented MCP project and identifies AGPL-3.0 licensing.",
+      "limitation": "Maintenance recency, auth/cost, and ARM64 evidence were not established; review license obligations before adopting."
+    },
+    {
+      "url": "https://github.com/soxoj/awesome-osint-mcp-servers",
+      "issuer": "soxoj",
+      "observed_fact": "This is a curated list of OSINT MCP servers, not a data API.",
+      "limitation": "The prompt\u2019s generic \u201cawesome-osint\u201d name is ambiguous; a list entry is not evidence that a listed service is maintained or safe."
+    },
+    {
+      "url": "https://github.com/soxoj/awesome-osint-mcp-servers/issues/11",
+      "issuer": "soxoj / GitHub",
+      "observed_fact": "A list issue proposes adding CompanyScope MCP.",
+      "limitation": "I did not resolve a canonical archived `companyscope-mcp` repository from primary results, so its archive status, license, auth, and maintenance remain unverified."
+    },
+    {
+      "url": "https://docs.langchain.com/langsmith/langsmith-mcp-server",
+      "issuer": "LangChain / LangSmith",
+      "observed_fact": "Official docs describe LangSmith MCP access to LangSmith traces, prompts, runs, datasets, and related workspace information.",
+      "limitation": "This is observability/workspace access, not an OSINT source. Workspace auth and plan costs depend on LangSmith."
+    },
+    {
+      "url": "https://github.com/langchain-ai/langsmith-mcp-server",
+      "issuer": "LangChain",
+      "observed_fact": "A legacy LangSmith MCP repository is marked archived.",
+      "limitation": "Use the current official docs rather than treating the archived repository as the supported integration."
+    }
+  ],
+  "recommendations": [
+    "For legal research, prefer the official CourtListener MCP; add the Vaquill fork only if a documented feature gap justifies a second connector.",
+    "Treat SEC, USAspending, and SAM.gov as separate government-data sources; use each official API\u2019s own access rules. Databook is a distinct NYC procurement/civic-data source.",
+    "Use OpenCorporates when cross-jurisdiction company records are needed, subject to confirmed account pricing and terms.",
+    "Keep the existing Shodan integration passive and bounded. Evaluate ZoomEye only for a specific indexed-asset coverage gap; both overlap in Internet-asset discovery.",
+    "Defer Arctic Shift until service uptime, limits, and provenance are checked. Treat the MCP collections and broad wrappers as discovery aids, not trusted data providers."
+  ],
+  "alternatives": [
+    "CourtListener official MCP instead of Vaquill\u2019s overlapping fork.",
+    "SEC filings and official federal spending/SAM APIs for attributable primary records rather than broad OSINT MCP bundles.",
+    "NYC Databook for NYC-specific procurement data; OpenCorporates for company registry aggregation."
+  ],
+  "rejected": [
+    "Do not integrate `awesome-osint` as a runtime service; it is a curated list.",
+    "Do not add LangSmith as an OSINT source; its documented purpose is LangSmith workspace observability.",
+    "Do not select `companyscope-mcp` until its canonical repository and archive/license state are confirmed.",
+    "Do not adopt broad OSINT wrappers solely because they expose MCP; tool-specific credentials, dependencies, provenance, and licensing need review."
+  ],
+  "unknowns": [
+    "Explicit ARM64 release/build support was not found for the named MCP repositories; do not infer it from Python or Node usage.",
+    "Current maintenance recency for Vaquill, frishtik, SOsintOps, and Arctic Shift needs repository commit/release metadata review.",
+    "Exact current OpenCorporates, Shodan, ZoomEye, SAM.gov, and LangSmith costs or quotas need confirmation against their account-specific official plans.",
+    "The precise existing Shodan passive endpoint and its current credentials were outside this text-only candidate audit.",
+    "No canonical primary source for the named archived CompanyScope MCP was resolved."
+  ],
+  "tests": {
+    "executed": "Eight bounded Exa search/answer calls using primary-source domains where available; reported tool cost totaled approximately USD 0.05, under the USD 0.50 cap.",
+    "not_executed": "No software installation, API/provider requests, repository edits, ARM64 builds, or live credential tests.",
+    "next_validation": "Before integration, verify endpoint-specific auth/rate rules, current repository activity/license, and ARM64 packaging from each selected project\u2019s primary source."
+  }
+}

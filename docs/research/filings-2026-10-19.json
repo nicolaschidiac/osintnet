@@ -1,0 +1,70 @@
+{
+  "lane": "OSINTNET discovery filings",
+  "observed_at": "2026-10-19",
+  "sources": [
+    {
+      "url": "https://www.irs.gov/charities-non-profits/tax-exempt-organization-search-bulk-data-downloads",
+      "issuer": "IRS",
+      "observed_fact": "The official page links to Pub. 78, automatic revocation, Form 990-N, Form 990 series, and the Exempt Organizations Business Master File (EO BMF).",
+      "limitation": "Landing-page inspection does not establish this organization\u2019s status or filing history."
+    },
+    {
+      "url": "https://www.irs.gov/charities-non-profits/form-990-series-downloads",
+      "issuer": "IRS",
+      "observed_fact": "The page lists yearly index CSVs and Form 990 XML ZIP bundles for 2021 onward, including 2021\u20132026. Index links expose a route to original XML returns.",
+      "limitation": "The bulk bundles were not downloaded or searched in full."
+    },
+    {
+      "url": "https://apps.irs.gov/app/eos/",
+      "issuer": "IRS",
+      "observed_fact": "The public TEOS endpoint returned HTTP 403 in this environment.",
+      "limitation": "This access failure yields no conclusion about EIN 86-3883211, its exemption, or determination letters."
+    },
+    {
+      "url": "https://apps.irs.gov/pub/epostcard/990/xml/2023/index_2023.csv",
+      "issuer": "IRS",
+      "observed_fact": "HTTP 200; the fetched prefix\u2019s header includes RETURN_ID, EIN, TAX_PERIOD, TAXPAYER_NAME, RETURN_TYPE, DLN, and OBJECT_ID. No matching EIN was found in the fetched prefix.",
+      "limitation": "Read stopped at 12,000,000 bytes; the index was not fully checked, so this is not evidence of no return."
+    },
+    {
+      "url": "https://apps.irs.gov/pub/epostcard/990/xml/2024/index_2024.csv",
+      "issuer": "IRS",
+      "observed_fact": "HTTP 200; the fetched prefix includes the return-index fields and XML_BATCH_ID. No matching EIN was found in the fetched prefix.",
+      "limitation": "Read stopped at 12,000,000 bytes; not a complete index search."
+    },
+    {
+      "url": "https://apps.irs.gov/pub/epostcard/990/xml/2025/index_2025.csv",
+      "issuer": "IRS",
+      "observed_fact": "HTTP 200; the fetched prefix includes the return-index fields and XML_BATCH_ID. No matching EIN was found in the fetched prefix.",
+      "limitation": "Read stopped at 12,000,000 bytes; not a complete index search."
+    },
+    {
+      "url": "https://apps.irs.gov/pub/epostcard/990/xml/2026/index_2026.csv",
+      "issuer": "IRS",
+      "observed_fact": "HTTP 200; the fetched prefix includes the return-index fields and XML_BATCH_ID. No matching EIN was found in the fetched prefix.",
+      "limitation": "Read stopped at 12,000,000 bytes; not a complete index search."
+    }
+  ],
+  "recommendations": [
+    "For EIN 86-3883211, search the complete IRS indexes for each relevant publication year, then retrieve and inspect matched original XML returns and schedules; use tax period and submission date to distinguish tax years from filing years.",
+    "Check the full EO BMF and Pub. 78/revocation data for legal names and status history; retry TEOS for determination-letter records when accessible.",
+    "After full IRS results are established, compare names and dates with the NY Attorney General registry at https://charitiesnys.com/RegistrySearch/search_charities.jsp and NY DOS corporate inquiry at https://apps.dos.ny.gov/publicInquiry/. These were not accessed in this run.",
+    "ProPublica API v2 was not accessed: under the primary-source constraint, use it only as a discovery lead and verify any returned filing against IRS originals."
+  ],
+  "alternatives": [
+    "If large indexes are impractical to search locally, use IRS TEOS interactive search or official annual XML index/bundles when the endpoint is accessible; retain the original XML and index row as evidence."
+  ],
+  "rejected": [
+    "No conclusion that returns, schedules, aliases, or determination letters are absent: the available index reads were partial and TEOS was inaccessible.",
+    "No ProPublica result used as primary evidence; no NY registry/DOS result asserted."
+  ],
+  "unknowns": [
+    "No concrete original return for the EIN was identified. Filing years/tax periods from 2021 onward, form types, schedules, aliases, and record gaps remain unverified.",
+    "No corroborating or falsifying evidence from New York registries was collected.",
+    "Whether the IRS index prefixes omitted matching rows in their unread portions is unknown."
+  ],
+  "tests": [
+    "Made eight direct HTTP requests total to official IRS URLs; no non-government sites were requested.",
+    "Confirmed IRS index responses and parsed their headers; limited each index read to 12,000,000 bytes, so EIN non-matches are explicitly non-conclusive."
+  ]
+}

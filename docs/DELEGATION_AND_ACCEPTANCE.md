@@ -1,0 +1,8 @@
+# Delegation and acceptance contract
+- Inspect live ROTOXY/LightSprint accounts, slots, model capabilities, credits, and Oracle/Cloud workers before planning implementation phases. User reports 12 slots per account: do not assume this is live capacity.
+- Commission independent bounded research tasks for nonprofit filings, corporations and courts, advertising, web archiving/SEO, geography, Reddit, tool audit, data architecture and dashboard UI. Explicit budgets, result contracts, leases, retries and per-worker heartbeat. No duplicate crawling or token waste. Prefer economical remote workers.
+- Architecture decision only after independent discovery reports and overlap review. Preserve CrewAI containers and production ORA3 Shodan.
+- Validate portable authenticated MCP gateway, Cloudflare tunnel, independent node failure isolation, up/down controls, live telemetry dashboard and tests; no live data flow animations without real events.
+- Deliver skills for selected adapters, accurate environment placeholders, clean OSS release and self-host instructions; no committed secrets.
+- Investigative deliverables: full dated website corpus, primary 990 XML/PDF, charity registrations and corporate filings, reproducible balance sheet/revenue comparisons, source-specific one-mile business map with coverage caveats, typed relationship network, claim verification tables, skeptical/exculpatory reviews and careful cited case report.
+- A finding of no verified fraud is a valid result. No religion-based ownership inference, guilt by proximity or offensive active penetration of third-party systems.

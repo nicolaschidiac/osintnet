@@ -1,0 +1,87 @@
+# Run alongside compose.yaml and an optional tunnel overlay.
+services:
+  gateway:
+    environment:
+      OSINTNET_WORKERS: "0"
+  worker-propublica:
+    &source-worker
+    image: osintnet:0.1.0
+    restart: unless-stopped
+    stop_grace_period: 90s
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    cpus: 0.25
+    mem_limit: 192m
+    pids_limit: 32
+    tmpfs: ["/tmp:size=16m,noexec,nosuid"]
+    environment:
+      OSINTNET_DATA: /data
+      OSINTNET_WEB_HOSTS: ${OSINTNET_WEB_HOSTS:-}
+      OSINTNET_OVERPASS_HOST: ${OSINTNET_OVERPASS_HOST:-overpass.private.coffee}
+    volumes: ["osintnet-data:/data"]
+    command: ["python", "-m", "osintnet.worker", "--adapter", "propublica"]
+    healthcheck:
+      test: ["CMD", "python", "-m", "osintnet.worker", "--adapter", "propublica", "--check"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options: {max-size: "3m", max-file: "2"}
+  worker-web-capture:
+    <<: *source-worker
+    command: ["python", "-m", "osintnet.worker", "--adapter", "web-capture"]
+    healthcheck:
+      test: ["CMD", "python", "-m", "osintnet.worker", "--adapter", "web-capture", "--check"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+  worker-irs-records:
+    <<: *source-worker
+    command: ["python", "-m", "osintnet.worker", "--adapter", "irs-records"]
+    healthcheck:
+      test: ["CMD", "python", "-m", "osintnet.worker", "--adapter", "irs-records", "--check"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+  worker-nyc-socrata:
+    <<: *source-worker
+    command: ["python", "-m", "osintnet.worker", "--adapter", "nyc-socrata"]
+    healthcheck:
+      test: ["CMD", "python", "-m", "osintnet.worker", "--adapter", "nyc-socrata", "--check"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+  worker-overpass:
+    <<: *source-worker
+    command: ["python", "-m", "osintnet.worker", "--adapter", "overpass"]
+    healthcheck:
+      test: ["CMD", "python", "-m", "osintnet.worker", "--adapter", "overpass", "--check"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+  worker-wayback-cdx:
+    <<: *source-worker
+    command: ["python", "-m", "osintnet.worker", "--adapter", "wayback-cdx"]
+    healthcheck:
+      test: ["CMD", "python", "-m", "osintnet.worker", "--adapter", "wayback-cdx", "--check"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+  worker-arcticshift:
+    <<: *source-worker
+    command: ["python", "-m", "osintnet.worker", "--adapter", "arcticshift"]
+    healthcheck:
+      test: ["CMD", "python", "-m", "osintnet.worker", "--adapter", "arcticshift", "--check"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
